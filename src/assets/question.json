@@ -1,0 +1,89 @@
+[
+  {
+    "question": "Which of the following commands makes /bin/foo executable by everyone but writable only by its owner?",
+    "options": {
+      "A": "chmod u=rwx,go=rx /bin/foo",
+      "B": "chmod o+rwx,a+rx /bin/foo",
+      "C": "chmod 577 /bin/foo",
+      "D": "chmod 775 /bin/foo"
+    },
+    "answer": "A",
+    "explanation": "correct answer: A"
+  },
+  {
+    "question": "What is true regarding UEFI firmware? (Choose two.)",
+    "options": {
+      "A": "It can read and interpret partition tables",
+      "B": "It can use and read certain file systems",
+      "C": "It stores its entire configuration on the /boot/ partition",
+      "D": "It is stored in a special area within the GPT metadata",
+      "E": "It is loaded from a fixed boot disk position"
+    },
+    "answer": ["B", "D"],
+    "explanation": "correct answer: B D"
+  },
+  {
+    "question": "What is the first program the Linux kernel starts at boot time when using System V init?",
+    "options": {
+      "A": "/lib/init.so",
+      "B": "/proc/sys/kernel/init",
+      "C": "/etc/rc.d/rcinit",
+      "D": "/sbin/init",
+      "E": "/boot/init"
+    },
+    "answer": "D",
+    "explanation": "correct answer: D"
+  },
+  {
+    "question": "Which of the following commands will write a message to the terminals of all logged in users?",
+    "options": {
+      "A": "bcast",
+      "B": "mesg",
+      "C": "print",
+      "D": "wall",
+      "E": "yell"
+    },
+    "answer": "D",
+    "explanation": "correct answer: D"
+  },
+  {
+    "question": "Which variable defines the directories in which a Bash shell searches for executable commands?",
+    "options": {
+      "A": "BASHEXEC",
+      "B": "BASHRC",
+      "C": "PATH",
+      "D": "EXECPATH",
+      "E": "PATHRC"
+    },
+    "answer": "C",
+    "explanation": "correct answer: C"
+  },
+  {
+    "question": "What is the name of the main configuration file for GNU GRUB? (Specify the file name only without any path.)",
+    "answer": "grub.cfg",
+    "explanation": "correct answer: grub.cfg, other Answer: menu.lst, grub.conf, grub.cfg"
+  },
+  {
+    "question": "Which of the following examples for Bash file globbing matches a file named root-can-do-this.txt when used in the directory holding that file? (Choose three correct answers.)",
+    "options": {
+      "A": "root*can?do-this.{txt,odt}",
+      "B": "r[oOoO]t-can-do*.txt",
+      "C": "{root,user,admin}-can-??-this.txt",
+      "D": "root*can*do??this.txt",
+      "E": "root***{can,may}-do-this.[tT][xX][tT]"
+    },
+    "answer": ["A", "C", "E"],
+    "explanation": "correct answer: A C E"
+  },
+  {
+    "question": "Which of the following kernel parameters instructs the kernel to suppress most boot messages?",
+    "options": {
+      "A": "silent",
+      "B": "verbose=0",
+      "C": "nomesg",
+      "D": "quiet"
+    },
+    "answer": "D",
+    "explanation": "correct answer: D"
+  }
+]
