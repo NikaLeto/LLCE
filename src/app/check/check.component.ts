@@ -76,17 +76,17 @@ export class CheckComponent implements OnInit {
     this.currentQuestionIndex = (this.currentQuestionIndex - 1 + this.questions.length) % this.questions.length;
   }
 
-  // isAnswerCorrect(currentQuestionIndex: number): boolean {
-  //   const currentQuestion = this.questions[currentQuestionIndex];
-  //   const userAnswer = this.userAnswers[currentQuestionIndex];
+  isAnswerCorrect(currentQuestionIndex: number): boolean {
+    const currentQuestion = this.questions[currentQuestionIndex];
+    const userAnswer = this.userAnswers[currentQuestionIndex];
 
-  //   if (this.isSingleChoice(currentQuestion.options)) {
-  //     return userAnswer === currentQuestion.answer[0];
-  //   } else if (this.isMultipleChoice(currentQuestion.options)) {
-  //     const correctAnswers = currentQuestion.answer;
-  //     return Array.isArray(userAnswer) && userAnswer.every((answer: string, index: number) => answer === correctAnswers[index]);
-  //   } else {
-  //     return userAnswer === currentQuestion.answer[0];
-  //   }
-  // }
+    if (this.isSingleChoice(currentQuestion.options)) {
+      return userAnswer === currentQuestion.answer[0];
+    } else if (this.isMultipleChoice(currentQuestion.options)) {
+      const correctAnswers = currentQuestion.answer;
+      return Array.isArray(userAnswer) && userAnswer.every((answer: string, index: number) => answer === correctAnswers[index]);
+    } else {
+      return userAnswer === currentQuestion.answer[0];
+    }
+  }
 }
