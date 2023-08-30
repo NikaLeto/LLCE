@@ -1,0 +1,207 @@
+===== /home/semus/angular/angularProject/llceapp/llceapp/src/app/score/score.component.ts =====
+// score.component.ts
+import { Component, OnInit } from '@angular/core';
+import { QuestionService } from '../shared/question.service';
+import { Question } from '../shared/question';
+
+@Component({
+  selector: 'app-score',
+  templateUrl: './score.component.html',
+})
+export class ScoreComponent implements OnInit {
+  correctAnswersCount: number = 0;
+  incorrectAnswersCount: number = 0;
+
+  constructor(private questionService: QuestionService) {}
+
+  ngOnInit(): void {
+    this.questionService.getQuestions().subscribe(
+      (questions: Question[]) => {
+        this.correctAnswersCount = questions.filter(question => question.isCorrect).length;
+        this.incorrectAnswersCount = questions.filter(question => !question.isCorrect).length;
+      },
+      (error) => {
+        console.error('Error loading questions:', error);
+      }
+    );
+  }
+}
+
+
+===== /home/semus/angular/angularProject/llceapp/llceapp/src/app/shared/question.service.ts =====
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { Question } from './question';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class QuestionService {
+  myUrl = '/assets/question.json'
+
+
+  constructor(private http: HttpClient) {
+  }
+  getQuestions(): Observable<Question[]> {
+    return this.http.get<Question[]>(this.myUrl);
+  }
+}
+
+
+===== /home/semus/angular/angularProject/llceapp/llceapp/src/app/shared/question.service.spec.ts =====
+import { TestBed } from '@angular/core/testing';
+
+import { QuestionService } from './question.service';
+
+describe('QuestionService', () => {
+  let service: QuestionService;
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({});
+    service = TestBed.inject(QuestionService);
+  });
+
+  it('should be created', () => {
+    expect(service).toBeTruthy();
+  });
+});
+
+
+===== /home/semus/angular/angularProject/llceapp/llceapp/src/app/shared/question.ts =====
+export interface Question {
+  question: string;
+  options: { [key: string]: string };
+  answer: string[];
+  explanation: string;
+  showOptions?: boolean;
+  showAnswer?: boolean;
+  isCorrect?: boolean; // Neue Eigenschaft
+}
+
+
+===== /home/semus/angular/angularProject/llceapp/llceapp/src/app/question-list/question-list.component.ts =====
+import { Component } from '@angular/core';
+import { QuestionService } from '../shared/question.service';
+import { Observable } from 'rxjs';
+import { Question } from '../shared/question';
+
+@Component({
+  selector: 'app-question-list',
+  templateUrl: './question-list.component.html',
+  styleUrls: ['./question-list.component.css']
+})
+export class QuestionListComponent {
+  questions$: Observable<Question[]>;
+
+  constructor(private service: QuestionService) {
+    this.questions$ = this.service.getQuestions();
+  }
+  toggleOptions(question: Question) {
+    question.showOptions = !question.showOptions;
+  }
+
+  toggleAnswer(question: Question) {
+    question.showAnswer = !question.showAnswer;
+  }
+}
+
+
+===== /home/semus/angular/angularProject/llceapp/llceapp/src/app/question-list/question-list.component.spec.ts =====
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+
+import { QuestionListComponent } from './question-list.component';
+
+describe('QuestionListComponent', () => {
+  let component: QuestionListComponent;
+  let fixture: ComponentFixture<QuestionListComponent>;
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      declarations: [QuestionListComponent]
+    });
+    fixture = TestBed.createComponent(QuestionListComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+});
+
+
+===== /home/semus/angular/angularProject/llceapp/llceapp/src/app/question-list/question-list.component.html =====
+<div class="question-list">
+  <div *ngIf="questions$ | async as questions">
+    <div *ngFor="let q of questions" class="question">
+      <h1>{{ q.question }}</h1>
+      <ul class="answer-list" *ngIf="q.showOptions">
+        <li *ngFor="let option of q.options | keyvalue">
+          {{ option.key }}: {{ option.value }}
+        </li>
+      </ul>
+      <p *ngIf="q.showAnswer">Correct Answer: {{ q.answer }}</p>
+      <div class="button-group">
+        <button class="toggle-button" (click)="toggleOptions(q)">Toggle Options</button>
+        <button class="toggle-button" (click)="toggleAnswer(q)">Toggle Answer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+===== /home/semus/angular/angularProject/llceapp/llceapp/src/app/home/home.component.spec.ts =====
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+
+import { HomeComponent } from './home.component';
+
+describe('HomeComponent', () => {
+  let component: HomeComponent;
+  let fixture: ComponentFixture<HomeComponent>;
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      declarations: [HomeComponent]
+    });
+    fixture = TestBed.createComponent(HomeComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+});
+
+
+===== /home/semus/angular/angularProject/llceapp/llceapp/src/app/home/home.component.ts =====
+import { Component } from '@angular/core';
+import { Observable } from 'rxjs';
+import { Question } from '../shared/question';
+import { QuestionService } from '../shared/question.service';
+
+@Component({
+  selector: 'app-home',
+  templateUrl: './home.component.html',
+  styleUrls: ['./home.component.css']
+})
+export class HomeComponent {
+  qestions$ : Observable<Question[]>
+
+  constructor(private service:QuestionService){
+       this.qestions$ = this.service.getQuestions()
+  }
+}
+
+
+===== /home/semus/angular/angularProject/llceapp/llceapp/src/app/home/home.component.html =====
+<p>home works!</p>
+<div class="button-container">
+  <button class="custom-button learn-button" routerLink="/list">Learn</button>
+  <button class="custom-button check-button" routerLink="/check">Check</button>
+  <button class="custom-button exam-button" routerLink="/list">Exam</button>
+</div>
+
+

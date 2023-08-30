@@ -1,0 +1,59 @@
+/* Stil für den Container */
+.question-list {
+  margin-top: 20px;
+  font-family: Arial, sans-serif;
+}
+
+/* Stil für jede Frage */
+/* Stil für den Container */
+.question-list {
+  margin-top: 20px;
+  font-family: Arial, sans-serif;
+}
+
+/* Stil für jede Frage */
+.question {
+  background-color: #f8f9fa;
+  border-radius: 5px;
+  padding: 10px;
+  margin-bottom: 15px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.question h1 {
+  font-size: 1.2rem;
+  margin-bottom: 5px;
+}
+
+/* Stil für Antwortvarianten */
+.answer-list {
+  list-style-type: none;
+  padding: 0;
+  margin-top: 5px;
+}
+
+.answer-list li {
+  padding: 5px;
+  border: 1px solid #ced4da;
+  border-radius: 3px;
+  margin-bottom: 3px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.answer-list li:hover {
+  background-color: #e9ecef;
+}
+
+.button-group {
+  margin-top: 10px; /* Hier können Sie den gewünschten Abstand einstellen, <div class="button-group"> in html einbauen*/
+}
+
+.toggle-button:first-child {
+  margin-bottom: 10px; /* Erhöhen Sie diesen Wert für mehr Abstand */
+}
+
+.toggle-button:last-child {
+  margin-top: 10px; /* Erhöhen Sie diesen Wert für mehr Abstand */
+}
+

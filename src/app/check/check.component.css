@@ -1,0 +1,13 @@
+.check-container {
+  text-align: center;
+  padding: 20px;
+}
+
+.question {
+  margin-bottom: 20px;
+}
+
+.result {
+  font-weight: bold;
+  color: green;
+}

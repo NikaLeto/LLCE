@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { HomeComponent } from './home/home.component';
 import { combineLatest } from 'rxjs';
 import { QuestionListComponent } from './question-list/question-list.component';
+import { CheckComponent } from './check/check.component';
 
 const routes: Routes = [
   {
@@ -16,7 +17,11 @@ const routes: Routes = [
   },
   {
     path:'list',
-    component:QuestionListComponent
+    component:QuestionListComponent,
+  },
+  {
+    path: 'check',
+    component: CheckComponent,
   }
 ];
 

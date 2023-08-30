@@ -1,0 +1,334 @@
+===== /home/semus/angular/angularProject/llceapp/llceapp/src/app/app.module.ts =====
+import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+import { HttpClientModule } from '@angular/common/http';
+import { AppRoutingModule } from './app-routing.module';
+import { AppComponent } from './app.component';
+import { QuestionListComponent } from './question-list/question-list.component';
+import { HomeComponent } from './home/home.component';
+import { CheckComponent } from './check/check.component';
+import { FormsModule } from '@angular/forms';
+import { ScoreComponent } from './score/score.component';
+
+
+@NgModule({
+  declarations: [
+    AppComponent,
+    QuestionListComponent,
+    HomeComponent,
+    CheckComponent,
+    ScoreComponent
+  ],
+  imports: [
+    BrowserModule,
+    HttpClientModule,
+    AppRoutingModule,
+    FormsModule
+  ],
+  providers: [],
+  bootstrap: [AppComponent]
+})
+export class AppModule { }
+
+
+===== /home/semus/angular/angularProject/llceapp/llceapp/src/app/app.component.spec.ts =====
+import { TestBed } from '@angular/core/testing';
+import { RouterTestingModule } from '@angular/router/testing';
+import { AppComponent } from './app.component';
+
+describe('AppComponent', () => {
+  beforeEach(() => TestBed.configureTestingModule({
+    imports: [RouterTestingModule],
+    declarations: [AppComponent]
+  }));
+
+  it('should create the app', () => {
+    const fixture = TestBed.createComponent(AppComponent);
+    const app = fixture.componentInstance;
+    expect(app).toBeTruthy();
+  });
+
+  it(`should have as title 'llceapp'`, () => {
+    const fixture = TestBed.createComponent(AppComponent);
+    const app = fixture.componentInstance;
+    expect(app.title).toEqual('llceapp');
+  });
+
+  it('should render title', () => {
+    const fixture = TestBed.createComponent(AppComponent);
+    fixture.detectChanges();
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.querySelector('.content span')?.textContent).toContain('llceapp app is running!');
+  });
+});
+
+
+===== /home/semus/angular/angularProject/llceapp/llceapp/src/app/app-routing.module.ts =====
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
+import { HomeComponent } from './home/home.component';
+import { combineLatest } from 'rxjs';
+import { QuestionListComponent } from './question-list/question-list.component';
+import { CheckComponent } from './check/check.component';
+
+const routes: Routes = [
+  {
+    path:'',
+    redirectTo:'home',
+    pathMatch:'full',
+  },
+  {
+    path:'home',
+    component: HomeComponent,
+  },
+  {
+    path:'list',
+    component:QuestionListComponent,
+  },
+  {
+    path: 'check',
+    component: CheckComponent,
+  }
+];
+
+
+@NgModule({
+  imports: [RouterModule.forRoot(routes)],
+  exports: [RouterModule]
+})
+export class AppRoutingModule { }
+
+
+===== /home/semus/angular/angularProject/llceapp/llceapp/src/app/app.component.html =====
+<router-outlet></router-outlet>
+
+
+===== /home/semus/angular/angularProject/llceapp/llceapp/src/app/app.component.ts =====
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css']
+})
+export class AppComponent {
+  title = 'llceapp';
+}
+
+
+===== /home/semus/angular/angularProject/llceapp/llceapp/src/app/check/check.component.html =====
+<div class="check-container">
+  <div *ngIf="questions.length > 0">
+    <div class="question">
+      <h1>{{ questions[currentQuestionIndex].question }}</h1>
+
+      <!-- Show options for single choice -->
+      <div *ngIf="isSingleChoice(questions[currentQuestionIndex].options)">
+        <div *ngFor="let option of questions[currentQuestionIndex].options | keyvalue; let i = index">
+          <label>
+            {{ option.value }}
+            <input type="radio"
+                   [name]="'question-' + currentQuestionIndex"
+                   [value]="i"
+                   [disabled]="showResult">
+          </label>
+        </div>
+      </div>
+
+      <!-- Show options for multiple choice -->
+      <div *ngIf="isMultipleChoice(questions[currentQuestionIndex].options)">
+        <div *ngFor="let option of questions[currentQuestionIndex].options | keyvalue; let i = index">
+          <label>
+            {{ option.value }}
+            <input type="checkbox"
+                   [name]="'question-' + currentQuestionIndex"
+                   [value]="i"
+                   [disabled]="showResult">
+          </label>
+        </div>
+      </div>
+
+      <!-- Show input for fill-in -->
+      <div *ngIf="!isSingleChoice(questions[currentQuestionIndex].options) && !isMultipleChoice(questions[currentQuestionIndex].options)">
+        <input type="text" [disabled]="showResult">
+      </div>
+
+      <div *ngIf="showResult && !isAnswerCorrect(currentQuestionIndex)" class="incorrect-answer">
+        Incorrect answer. Please try again.
+      </div>
+
+      <button (click)="checkAnswer()">Check Answer</button>
+      <button (click)="nextQuestion()">Next Question</button>
+
+      <p *ngIf="showResult" class="result">
+        <ng-container *ngIf="isAnswerCorrect(currentQuestionIndex); else wrongAnswer">
+          Correct! Click 'Next Question' to continue.
+        </ng-container>
+        <ng-template #wrongAnswer>
+          Wrong. Click 'Next Question' to continue.
+        </ng-template>
+      </p>
+    </div>
+  </div>
+</div>
+
+
+===== /home/semus/angular/angularProject/llceapp/llceapp/src/app/check/check.component.spec.ts =====
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+
+import { CheckComponent } from './check.component';
+
+describe('CheckComponent', () => {
+  let component: CheckComponent;
+  let fixture: ComponentFixture<CheckComponent>;
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      declarations: [CheckComponent]
+    });
+    fixture = TestBed.createComponent(CheckComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+});
+
+
+===== /home/semus/angular/angularProject/llceapp/llceapp/src/app/check/check.component.ts =====
+import { Component, OnInit } from '@angular/core';
+import { QuestionService } from '../shared/question.service';
+import { Question } from '../shared/question';
+
+@Component({
+  selector: 'app-check',
+  templateUrl: './check.component.html',
+  styleUrls: ['./check.component.css']
+})
+export class CheckComponent implements OnInit {
+  questions: Question[] = [];
+  currentQuestionIndex: number = 0;
+  userAnswers: (string | string[])[] = [];
+  showResult: boolean = false;
+  incorrectAnswersCount: number = 0;
+  maxIncorrectAnswers: number = 7;
+
+  constructor(private questionService: QuestionService) {}
+
+  ngOnInit(): void {
+    this.loadQuestions();
+  }
+
+  loadQuestions(): void {
+    this.questionService.getQuestions().subscribe(
+      (data: Question[]) => {
+        this.questions = data;
+      },
+      (error) => {
+        console.error('Error loading questions:', error);
+      }
+    );
+  }
+
+  isSingleChoice(options: { [key: string]: string }): boolean {
+    return Object.keys(options).length === 1;
+  }
+
+  isMultipleChoice(options: { [key: string]: string }): boolean {
+    return Object.keys(options).length > 1;
+  }
+
+  checkAnswer(): void {
+    const currentQuestion = this.questions[this.currentQuestionIndex];
+
+    if (this.isSingleChoice(currentQuestion.options)) {
+      const correctAnswer = currentQuestion.answer[0];
+      this.showResult = this.userAnswers[0] === correctAnswer;
+    } else if (this.isMultipleChoice(currentQuestion.options)) {
+      const correctAnswers = currentQuestion.answer;
+      this.showResult = Array.isArray(this.userAnswers[this.currentQuestionIndex]) &&
+  (this.userAnswers[this.currentQuestionIndex] as string[]).every(
+    (userAnswer: string, index: number) => userAnswer === correctAnswers[index]
+  );
+    } else {
+      const correctAnswer = currentQuestion.answer[0];
+      this.showResult = this.userAnswers[0] === correctAnswer;
+    }
+
+    if (this.showResult) {
+      this.incorrectAnswersCount = 0;
+      this.nextQuestion();
+    } else {
+      this.incorrectAnswersCount++;
+
+      if (this.incorrectAnswersCount >= this.maxIncorrectAnswers) {
+        this.incorrectAnswersCount = 0;
+        this.previousQuestion();
+      }
+    }
+  }
+
+  nextQuestion(): void {
+    this.userAnswers[this.currentQuestionIndex] = [];
+    this.showResult = false;
+    this.currentQuestionIndex = (this.currentQuestionIndex + 1) % this.questions.length;
+  }
+
+  previousQuestion(): void {
+    this.userAnswers[this.currentQuestionIndex] = [];
+    this.showResult = false;
+    this.currentQuestionIndex = (this.currentQuestionIndex - 1 + this.questions.length) % this.questions.length;
+  }
+
+  isAnswerCorrect(currentQuestionIndex: number): boolean {
+    const currentQuestion = this.questions[currentQuestionIndex];
+    const userAnswer = this.userAnswers[currentQuestionIndex];
+
+    if (this.isSingleChoice(currentQuestion.options)) {
+      return userAnswer === currentQuestion.answer[0];
+    } else if (this.isMultipleChoice(currentQuestion.options)) {
+      const correctAnswers = currentQuestion.answer;
+      return Array.isArray(userAnswer) && userAnswer.every((answer: string, index: number) => answer === correctAnswers[index]);
+    } else {
+      return userAnswer === currentQuestion.answer[0];
+    }
+  }
+}
+
+
+===== /home/semus/angular/angularProject/llceapp/llceapp/src/app/score/score.component.html =====
+<!-- score.component.html -->
+<div class="score-container">
+  <h1>Score Overview</h1>
+  <p>Correct Answers: {{ correctAnswersCount }}</p>
+  <p>Incorrect Answers: {{ incorrectAnswersCount }}</p>
+</div>
+
+
+
+===== /home/semus/angular/angularProject/llceapp/llceapp/src/app/score/score.component.spec.ts =====
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+
+import { ScoreComponent } from './score.component';
+
+describe('ScoreComponent', () => {
+  let component: ScoreComponent;
+  let fixture: ComponentFixture<ScoreComponent>;
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      declarations: [ScoreComponent]
+    });
+    fixture = TestBed.createComponent(ScoreComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+});
+
+

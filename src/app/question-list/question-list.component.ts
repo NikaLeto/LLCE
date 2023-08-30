@@ -9,9 +9,16 @@ import { Question } from '../shared/question';
   styleUrls: ['./question-list.component.css']
 })
 export class QuestionListComponent {
-qestions$ : Observable<Question[]>
+  questions$: Observable<Question[]>;
 
-  constructor(private service:QuestionService){
-       this.qestions$ = this.service.getQuestions()
+  constructor(private service: QuestionService) {
+    this.questions$ = this.service.getQuestions();
+  }
+  toggleOptions(question: Question) {
+    question.showOptions = !question.showOptions;
+  }
+
+  toggleAnswer(question: Question) {
+    question.showAnswer = !question.showAnswer;
   }
 }

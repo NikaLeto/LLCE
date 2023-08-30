@@ -5,18 +5,24 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { QuestionListComponent } from './question-list/question-list.component';
 import { HomeComponent } from './home/home.component';
+import { CheckComponent } from './check/check.component';
+import { FormsModule } from '@angular/forms';
+import { ScoreComponent } from './score/score.component';
 
 
 @NgModule({
   declarations: [
     AppComponent,
     QuestionListComponent,
-    HomeComponent
+    HomeComponent,
+    CheckComponent,
+    ScoreComponent
   ],
   imports: [
     BrowserModule,
     HttpClientModule,
-    AppRoutingModule
+    AppRoutingModule,
+    FormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

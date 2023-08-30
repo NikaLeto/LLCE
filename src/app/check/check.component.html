@@ -1,0 +1,47 @@
+<div *ngIf="questions.length > 0">
+  <div class="question">
+    <h1>{{ questions[currentQuestionIndex].question }}</h1>
+
+    <ng-container [ngSwitch]="questions[currentQuestionIndex].type">
+      <!-- Single Choice: Radio Buttons -->
+      <div *ngSwitchCase="'single'">
+        <!-- Display radio buttons for single-choice questions -->
+        <div *ngFor="let option of questions[currentQuestionIndex].options; let i = index">
+          <label>
+            <input type="radio"
+                   [name]="'question-' + currentQuestionIndex"
+                   [value]="i"
+                   [(ngModel)]="userAnswers[currentQuestionIndex]"
+                   [disabled]="showResult">
+            {{ option }}
+          </label>
+        </div>
+      </div>
+
+      <!-- Multiple Choice: Checkboxes -->
+      <div *ngSwitchCase="'multiple'">
+        <!-- Display checkboxes for multiple-choice questions -->
+        <div *ngFor="let option of questions[currentQuestionIndex].options; let i = index">
+          <label>
+            <input type="checkbox"
+                   [name]="'question-' + currentQuestionIndex"
+                   [value]="i"
+                   [(ngModel)]="userAnswers[currentQuestionIndex]"
+                   [disabled]="showResult">
+            {{ option }}
+          </label>
+        </div>
+      </div>
+
+      <!-- Fill-in: Input -->
+      <div *ngSwitchCase="'fill-in'">
+        <!-- Display input field for fill-in questions -->
+        <input type="text" [(ngModel)]="userAnswers[currentQuestionIndex]" [disabled]="showResult">
+      </div>
+    </ng-container>
+
+    <!-- ... (Rest of the template) -->
+     <!-- Show "Next" button if not the last question -->
+     <button *ngIf="currentQuestion.number < questions.length" (click)="nextQuestion()">Next</button>
+  </div>
+</div>

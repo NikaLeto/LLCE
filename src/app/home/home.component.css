@@ -1,0 +1,29 @@
+.button-container {
+  display: flex;
+  gap: 10px; /* Hier kannst du den gewünschten Abstand einstellen */
+  margin-top: 20px; /* Optional: Abstand oberhalb des Button-Containers */
+}
+
+.custom-button {
+  padding: 10px 20px;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.learn-button {
+  background-color: #dc3545; /* Rot */
+}
+
+.check-button {
+  background-color: #f0ad4e; /* Gelb */
+}
+
+.exam-button {
+  background-color: #28a745; /* Grün */
+}
+
+.custom-button:hover {
+  opacity: 0.9; /* Verringere die Deckkraft, wenn der Knopf hover ist */
+}
