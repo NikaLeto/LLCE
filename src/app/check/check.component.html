@@ -19,29 +19,34 @@
       </div>
 
       <!-- Multiple Choice: Checkboxes -->
-      <div *ngSwitchCase="'multiple'">
-        <!-- Display checkboxes for multiple-choice questions -->
-        <div *ngFor="let option of questions[currentQuestionIndex].options; let i = index">
-          <label>
-            <input type="checkbox"
-                   [name]="'question-' + currentQuestionIndex"
-                   [value]="i"
-                   [(ngModel)]="userAnswers[currentQuestionIndex]"
-                   [disabled]="showResult">
-            {{ option }}
-          </label>
-        </div>
-      </div>
+<div *ngSwitchCase="'multi'">
+  <!-- Display checkboxes for multiple-choice questions -->
+  <div *ngFor="let option of questions[currentQuestionIndex].options; let i = index">
+    <label [class.selected]="isOptionSelected(option)">
+      <input type="checkbox"
+             [name]="'question-' + currentQuestionIndex"
+             (change)="toggleOption(option)"
+             [(ngModel)]="userAnswers[currentQuestionIndex]"
+             [disabled]="showResult">
+      {{ option }}
+    </label>
+  </div>
+</div>
 
       <!-- Fill-in: Input -->
-      <div *ngSwitchCase="'fill-in'">
+      <div *ngSwitchCase="'fill'">
         <!-- Display input field for fill-in questions -->
         <input type="text" [(ngModel)]="userAnswers[currentQuestionIndex]" [disabled]="showResult">
       </div>
     </ng-container>
 
-    <!-- ... (Rest of the template) -->
-     <!-- Show "Next" button if not the last question -->
-     <button *ngIf="currentQuestion.number < questions.length" (click)="nextQuestion()">Next</button>
+    <!-- Buttons for navigating between questions -->
+     <div class="navigation-buttons">
+      <button (click)="previousQuestion()" [disabled]="currentQuestionIndex === 0">Previous</button>
+      <button (click)="nextQuestion()" [disabled]="currentQuestionIndex === questions.length - 1">Next</button>
+    </div>
+
+
   </div>
 </div>
+<app-score></app-score>
