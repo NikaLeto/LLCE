@@ -1,0 +1,34 @@
+<div class="question-container">
+  <div *ngIf="Questions && Questions.length > 0">
+    <h1>{{ currentIndex + 1 }}. question:</h1>
+    <p>{{ Questions[currentIndex]?.question }}</p>
+    <br>QType: {{ Questions[currentIndex]?.questionType }} <br>
+    <div *ngIf="Questions[currentIndex]?.type === 'fill'">
+      <!-- ... Fill-in-the-blank question handling ... -->
+    </div>
+    <div *ngIf="Questions[currentIndex]?.options">
+      <div *ngFor="let option of Questions[currentIndex]?.options; let i = index">
+        <label *ngIf="Questions[currentIndex].type === 'single'">
+          <input type="radio" name="answer" [value]="option[0]" (change)="Gewaehlt(option[0], $event)" />
+          {{ option }}
+        </label>
+        <label *ngIf="Questions[currentIndex].type === 'multi'">
+          <input type="checkbox" [value]="option[0]" (change)="Gewaehlt(option[0], $event)" />
+          {{ option }}
+        </label>
+      </div>
+    </div>
+    <div>
+
+      <button class="button" (click)="previousFrage()">Back</button>
+      <button class="button" (click)="nextFrage()">Next</button>
+      <button class="custom-button home" routerLink="/home">Home</button>
+    </div>
+   <div *ngIf="correctCount >= 0">
+      <p>Correct: {{ correctAnswer }}</p>
+      <p>Incorrect: {{ incorrectCount }}</p>
+    </div>
+  </div>
+</div>
+
+

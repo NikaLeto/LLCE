@@ -1,203 +1,198 @@
-/* import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Type } from '@angular/core';
 import { QuestionService } from '../shared/question.service';
-import { Question } from '../shared/question';
+// import { Question } from '../shared/question';
+import { Router } from '@angular/router';
 import { ScoreService } from '../score.service';
-
-
+import { Question } from '../shared/question';
 
 @Component({
   selector: 'app-check',
   templateUrl: './check.component.html',
   styleUrls: ['./check.component.css']
 })
-export class CheckComponent implements OnInit {
-  questions: Question[] = [];
-  currentQuestionIndex: number = 0;
-  userAnswers: (string | string[])[] = [];
-  showResult: boolean = false;
-  incorrectAnswersCount: number = 0;
-  maxIncorrectAnswers: number = 7;
 
-  constructor(private questionService: QuestionService, private scoreService: ScoreService) {}
+export class CheckComponent {
+  constructor(private questionService: QuestionService, private router: Router, private scoreService: ScoreService) { }
+
+  questionArrayIndex: any;
+  Questions: any[] = [];
+  currentIndex: number = 0;
+  selectedOption: string[] = [];
+  correctAnswer: number = 0;
+  falseAnswer: number = 0;
+  a: string[] = [];
+  correctCount: number = 0;
+  incorrectCount: number = 0;
+
+  Answers(): string[] {
+    let a: string[] = [];
+    for (let i = 0; i < this.Questions.length; i++) {
+      if (this.Questions[i].correctAnswer) {
+        a[i] = this.Questions[i].correctAnswer;
+      }
+    }
+    return a;
+  }
 
   ngOnInit(): void {
-    this.loadQuestions();
+    this.questionService.getQuestions().subscribe((question) => {
+      this.Questions = question;
+    });
   }
 
-  loadQuestions(): void {
-    this.questionService.getQuestions().subscribe(
-      (data: Question[]) => {
-        this.questions = data;
-      },
-      (error) => {
-        console.error('Error loading questions:', error);
-      }
-    );
-  }
+/*
+  nextFrage(): void {
+    const currentQuestion = this.Questions[this.currentIndex];
+    const correctAnswers = this.Answers();
 
-    nextQuestion(): void {
-    this.userAnswers[this.currentQuestionIndex] = [];
-    this.showResult = false;
-    this.currentQuestionIndex = (this.currentQuestionIndex + 1) % this.questions.length;
-  }
-
-  previousQuestion(): void {
-    this.userAnswers[this.currentQuestionIndex] = [];
-    this.showResult = false;
-    this.currentQuestionIndex = (this.currentQuestionIndex - 1 + this.questions.length) % this.questions.length;
-  }
-
-  isAnswerCorrect(currentQuestionIndex: number): boolean {
-    const currentQuestion = this.questions[currentQuestionIndex];
-    const userAnswer = this.userAnswers[currentQuestionIndex];
-
-    if (this.isSingleChoice(currentQuestion.options)) {
-      return userAnswer === currentQuestion.answer[0];
-    } else if (this.isMultipleChoice(currentQuestion.options)) {
-      const correctAnswers = currentQuestion.answer;
-      return Array.isArray(userAnswer) && userAnswer.every((answer: string, index: number) => answer === correctAnswers[index]);
-    } else {
-      return userAnswer === currentQuestion.answer[0];
-    }
-  }
-  isSingleChoice(options: string[]): boolean {
-    return options.length === 1;
-  }
-  isMultipleChoice(options: string[]): boolean {
-    return options.length > 1;
-  }
-  packInArray(selectedOption: string) {
-    if (!this.userAnswers[this.currentQuestionIndex]) {
-      this.userAnswers[this.currentQuestionIndex] = [];
-    }
-
-    const selectedOptions = this.userAnswers[this.currentQuestionIndex];
-    const optionPosition = selectedOptions.indexOf(selectedOption);
-
-    if(Array.isArray(selectedOptions)){
-
-      if (optionPosition === -1) {
-        selectedOptions.push(selectedOption);
+    // Überprüfe die Antwort des Benutzers
+    if (currentQuestion.type == 'fill') {
+      // Überprüfung für "Fill in the blank" Fragen
+      if (this.selectedOption[0] == currentQuestion.correctAnswer) {
+        this.correctAnswer++;
+        this.currentIndex++; // Nur zur nächsten Frage gehen, wenn die Antwort richtig ist
+        console.log('Richtige Antwort');
       } else {
-        selectedOptions.splice(optionPosition, 1);
+        // Die Antwort ist falsch, bleibe bei dieser Frage
+        this.falseAnswer++;
+        console.log('Falsche Antwort');
+      }
+    } else if (currentQuestion.type == 'multi' || currentQuestion.type == 'single') {
+      // Überprüfung für Multiple-Choice und Single-Choice Fragen
+      if (!this.isEqual(this.selectedOption, correctAnswers)) {
+        this.correctAnswer++;
+        this.currentIndex++; // Nur zur nächsten Frage gehen, wenn die Antwort richtig ist
+        console.log('Richtige Antwort');
+      } else {
+        // Die Antwort ist falsch, bleibe bei dieser Frage
+        this.falseAnswer++;
+        console.log('Falsche Antwort');
       }
     }
-    console.table(selectedOptions);
-  }
+  } */
 
+  nextFrage(): void {
+    const currentQuestion = this.Questions[this.currentIndex];
 
-}
-
- */
-
-import { Component, OnInit } from '@angular/core';
-import { QuestionService } from '../shared/question.service';
-import { Question } from '../shared/question';
-import { ScoreService } from '../score.service';
-
-@Component({
-  selector: 'app-check',
-  templateUrl: './check.component.html',
-  styleUrls: ['./check.component.css']
-})
-export class CheckComponent implements OnInit {
-  questions: Question[] = [];
-  currentQuestionIndex: number = 0;
-  userAnswers: (string | string[])[] = [];
-  showResult: boolean = false;
-  incorrectAnswersCount: number = 0;
-  maxIncorrectAnswers: number = 7;
-
-  constructor(private questionService: QuestionService, private scoreService: ScoreService) {}
-
-  ngOnInit(): void {
-    this.loadQuestions();
-  }
-
-  loadQuestions(): void {
-    this.questionService.getQuestions().subscribe(
-      (data: Question[]) => {
-        this.questions = data;
-      },
-      (error) => {
-        console.error('Error loading questions:', error);
+    if (currentQuestion.type === 'fill') {
+      if (this.selectedOption[0] === currentQuestion.correctAnswer) {
+        this.correctAnswer++;
       }
-    );
-  }
-
-  nextQuestion(): void {
-    this.userAnswers[this.currentQuestionIndex] = [];
-    this.showResult = false;
-    this.currentQuestionIndex = (this.currentQuestionIndex + 1) % this.questions.length;
-  }
-
-  previousQuestion(): void {
-    this.userAnswers[this.currentQuestionIndex] = [];
-    this.showResult = false;
-    this.currentQuestionIndex = (this.currentQuestionIndex - 1 + this.questions.length) % this.questions.length;
-  }
-
-  isAnswerCorrect(currentQuestionIndex: number): boolean {
-    const currentQuestion = this.questions[currentQuestionIndex];
-    const userAnswer = this.userAnswers[currentQuestionIndex];
-
-    if (this.isSingleChoice(currentQuestion.options)) {
-      return userAnswer === currentQuestion.answer[0];
-    } else if (this.isMultipleChoice(currentQuestion.options)) {
-      const correctAnswers = currentQuestion.answer;
-      return Array.isArray(userAnswer) && userAnswer.every((answer: string, index: number) => answer === correctAnswers[index]);
-    } else {
-      return userAnswer === currentQuestion.answer[0];
+    } else if (currentQuestion.type === 'multi' || currentQuestion.type === 'single') {
+      if (this.isEqual(this.selectedOption, currentQuestion.correctAnswer)) {
+        this.correctAnswer++;
+      }
+    }
+    this.currentIndex++;
+    // Check if the quiz is complete and navigate to the score page
+    if (this.currentIndex >= this.Questions.length || this.falseAnswer >= 7) {
+      this.router.navigate(['/score']);
     }
   }
 
-  isSingleChoice(options: string[]): boolean {
-    return options.length === 1;
+
+  previousFrage(): void {
+    if (this.currentIndex > 0) {
+      this.currentIndex--;
+    }
   }
 
-  isMultipleChoice(options: string[]): boolean {
-    return options.length > 1;
+  SkipFrage(): void {
+    this.currentIndex++;
+  }
+  isTrue(questionArrayIndex: number, benutzerAntwort: string[]): void {
+    if (this.isEqual(this.Questions[this.currentIndex].correctAnswer,
+      benutzerAntwort)) {
+      this.nextFrage();
+      console.log('Benutzer Antwort', benutzerAntwort);
+    }
+    else {
+      this.previousFrage()
+      this.falseAnswer++
+    }
+    // if (this.falseAnswer > 6 || this.currentIndex > 120) {
+    // this.router.navigate(['/ergebnis']);
+    // }
+    if (this.currentIndex > 120 || this.falseAnswer > 6) {
+      this.router.navigate(['/score']);
+    }
+    this.scoreService.setCorrectAnswer(this.correctAnswer);
+    this.scoreService.getCorrectAnswer();
+    this.scoreService.setfalseAnswer(this.falseAnswer);
+    this.scoreService.getFalseAnswer();
+  }
+  Gewaehlt(option: string, event: any): void {
+    // Get the current question type
+    const questionType: string = this.Questions[this.currentIndex].type;
+
+    console.log('Question:', this.Questions[this.currentIndex]);
+    // Log the question type and selected option for debugging
+    console.log('Question Type:', this.Questions[this.currentIndex].type);
+
+    console.log('Selected Option:', option);
+
+    // Handle user input based on the question type
+    if (questionType === 'fill') {
+      // Handle fill-in-the-blank questions
+      this.handleFillInQuestion(event);
+    } else if (questionType === 'multi') {
+      // Handle multiple-choice questions
+      this.handleMultipleChoiceQuestion(option, event);
+    } else if (questionType === 'single') {
+      // Handle single-choice questions
+      this.handleSingleChoiceQuestion(option);
+    }
   }
 
 
+  handleFillInQuestion(event: any): void {
+    this.selectedOption = [];
+    this.selectedOption.push(event.target.value);
+  }
 
-toggleOption(option: string): void {
-  const userAnswer = this.userAnswers[this.currentQuestionIndex] || [];
-
-  if (Array.isArray(userAnswer)) {
-    const optionIndex = userAnswer.indexOf(option);
-
-    if (optionIndex === -1) {
-      // Die Option ist nicht ausgewählt, also füge sie hinzu
-      userAnswer.push(option);
+  handleMultipleChoiceQuestion(option: string, event: any): void {
+    if (event.target.checked) {
+      this.selectedOption.push(option);
     } else {
-      // Die Option ist bereits ausgewählt, also entferne sie
-      userAnswer.splice(optionIndex, 1);
+      const number = this.selectedOption.indexOf(option);
+      if (number >= 0) {
+        this.selectedOption.splice(number, 1);
+      }
+    }
+  }
+
+  handleSingleChoiceQuestion(option: string): void {
+    this.selectedOption = [];
+    this.selectedOption.push(option);
+  }
+  isEqual(arr1: string[], arr2: string[]): boolean {
+    if (arr1.length != arr2.length) {
+      return false;
     }
 
-    // Aktualisiere die Benutzerantwort
-    this.userAnswers[this.currentQuestionIndex] = userAnswer;
-  }
-}
-
-/* toggleOption(option: string): void {
-  const userAnswer = this.userAnswers[this.currentQuestionIndex] || [];
-
-  if (Array.isArray(userAnswer)) {
-    if (userAnswer.includes(option)) {
-      // Die Option ist bereits ausgewählt, also entferne sie
-      userAnswer.splice(userAnswer.indexOf(option), 1);
-    } else {
-      // Die Option ist nicht ausgewählt, also füge sie hinzu
-      userAnswer.push(option);
+    const sorted1 = arr1.slice();
+    const sorted2 = arr2.slice();
+    for (let i = 0; i < sorted1.length; i++) {
+      if (sorted1[i] != sorted2[i]) {
+        return false;
+      }
     }
-
-    // Aktualisiere die Benutzerantwort
-    this.userAnswers[this.currentQuestionIndex] = userAnswer;
+    return true;
   }
-} */
-  isOptionSelected(option: string): boolean {
-    const userAnswer = this.userAnswers[this.currentQuestionIndex] || [];
-    return userAnswer.includes(option);
+  /* checkAnswers() {
+    this.correctCount = 0;
+    this.incorrectCount = 0;
+    for (let i = 0; i < this.Questions.length; i++) {
+      const question = this.Questions[i];
+      const selectedOption = this.selectedOption[i];
+
+      // Überprüfen, ob die ausgewählte Option mit der korrekten Antwort übereinstimmt
+      if (this.isEqual([selectedOption], [question.correctAnswer])) {
+        this.correctCount++;
+      } else {
+        this.incorrectCount++;
+      }
+    } */
 }
-}
+
+

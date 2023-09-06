@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Question } from './question';
+// import { Question } from './question';
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +12,7 @@ export class QuestionService {
 
   constructor(private http: HttpClient) {
   }
-  getQuestions(): Observable<Question[]> {
-    return this.http.get<Question[]>(this.myUrl);
+  getQuestions(): Observable<any[]> {
+    return this.http.get<any[]>(this.myUrl);
   }
 }

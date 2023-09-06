@@ -1,52 +1,36 @@
-<div *ngIf="questions.length > 0">
-  <div class="question">
-    <h1>{{ questions[currentQuestionIndex].question }}</h1>
 
-    <ng-container [ngSwitch]="questions[currentQuestionIndex].type">
-      <!-- Single Choice: Radio Buttons -->
-      <div *ngSwitchCase="'single'">
-        <!-- Display radio buttons for single-choice questions -->
-        <div *ngFor="let option of questions[currentQuestionIndex].options; let i = index">
-          <label>
-            <input type="radio"
-                   [name]="'question-' + currentQuestionIndex"
-                   [value]="i"
-                   [(ngModel)]="userAnswers[currentQuestionIndex]"
-                   [disabled]="showResult">
+
+  <div class="question-container">
+    <div *ngIf="Questions && Questions.length > 0">
+      <h1>{{ currentIndex + 1 }}. question:</h1>
+      <p>{{ Questions[currentIndex]?.question }}</p>
+      <br>QType: {{ Questions[currentIndex]?.questionType }} <br>
+      <div *ngIf="Questions[currentIndex]?.type === 'fill'">
+        <!-- ... Fill-in-the-blank question handling ... -->
+      </div>
+      <div *ngIf="Questions[currentIndex]?.options">
+        <div *ngFor="let option of Questions[currentIndex]?.options; let i = index">
+          <label *ngIf="Questions[currentIndex].type === 'single'">
+            <input type="radio" name="answer" [value]="option[0]" (change)="Gewaehlt(option[0], $event)" />
+            {{ option }}
+          </label>
+          <label *ngIf="Questions[currentIndex].type === 'multi'">
+            <input type="checkbox" [value]="option[0]" (change)="Gewaehlt(option[0], $event)" />
             {{ option }}
           </label>
         </div>
       </div>
-
-      <!-- Multiple Choice: Checkboxes -->
-<div *ngSwitchCase="'multi'">
-  <!-- Display checkboxes for multiple-choice questions -->
-  <div *ngFor="let option of questions[currentQuestionIndex].options; let i = index">
-    <label [class.selected]="isOptionSelected(option)">
-      <input type="checkbox"
-             [name]="'question-' + currentQuestionIndex"
-             (change)="toggleOption(option)"
-             [(ngModel)]="userAnswers[currentQuestionIndex]"
-             [disabled]="showResult">
-      {{ option }}
-    </label>
-  </div>
-</div>
-
-      <!-- Fill-in: Input -->
-      <div *ngSwitchCase="'fill'">
-        <!-- Display input field for fill-in questions -->
-        <input type="text" [(ngModel)]="userAnswers[currentQuestionIndex]" [disabled]="showResult">
+      <div>
+        <button class="button" (click)="SkipFrage()">Skip</button>
+        <button class="button" (click)="previousFrage()">Zurück</button>
+        <button class="button" *ngIf="selectedOption != null" (click)="isTrue(currentIndex, selectedOption)">Nächste </button>
+        <button class="custom-button home" routerLink="/home">Home</button>
       </div>
-    </ng-container>
-
-    <!-- Buttons for navigating between questions -->
-     <div class="navigation-buttons">
-      <button (click)="previousQuestion()" [disabled]="currentQuestionIndex === 0">Previous</button>
-      <button (click)="nextQuestion()" [disabled]="currentQuestionIndex === questions.length - 1">Next</button>
+      <div *ngIf="correctCount >= 0">
+        <p>Correct: {{ correctAnswer }}</p>
+        <p>Incorrect: {{ falseAnswer }}</p>
+      </div>
     </div>
-
-
   </div>
-</div>
-<app-score></app-score>
+
+
